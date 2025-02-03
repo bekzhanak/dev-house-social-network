@@ -1,3 +1,15 @@
-print("Hello World!")
+from fastapi import FastAPI, Depends, HTTPException, Path, Request, status
+import models
+from database import engine, Sessionlocal
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
+from routers import auth
+app = FastAPI()
 
-print(5+5)
+models.Base.metadata.create_all(bind=engine)
+
+@app.get("/")
+def test(request: Request):
+    return RedirectResponse(url="/docs")
+
+app.include_router(auth.router)
