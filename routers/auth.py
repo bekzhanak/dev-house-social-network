@@ -185,9 +185,11 @@ async def update_profile(update_data: UpdateProfileRequest, current_user: user_d
 async def delete_profile(current_user: user_dependency,db: db_dependeny):
 
     user_profile = db.query(Profiles).filter(Profiles.user_id == current_user['id']).first()
-    if not user_profile:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found")
+    user_user = db.query(Users).filter(Users.id == current_user['id']).first()
+    if not user_profile or not user_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile or user not found")
 
     db.delete(user_profile)
+    db.delete(user_user)
     db.commit()
     return {"detail": "Profile deleted successfully"}
