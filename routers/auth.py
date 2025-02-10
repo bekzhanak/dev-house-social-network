@@ -1,4 +1,6 @@
 from typing import Annotated, Optional
+import os
+from dotenv import load_dotenv
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
@@ -14,8 +16,9 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from datetime import timedelta, datetime, timezone
 from jose import jwt, JWTError
 
-SECRET_KEY = 'e111c045db9f608a80b2f9551be6224b7e1c0e8aded97ce1ecc562633fccc319'
-ALGORITHM = 'HS256'
+load_dotenv()
+SECRET_KEY = os.getenv("JWT_KEY")
+ALGORITHM = os.getenv("ALGORITHM_TYPE")
 
 router = APIRouter(
     prefix = '/auth',
@@ -84,7 +87,6 @@ def authenticate_user(username: str, password: str, db):
     db.commit()
     db.refresh(user_profile)
     return user
-
 
 
 

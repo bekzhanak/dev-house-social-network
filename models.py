@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text
 from datetime import datetime
 from sqlalchemy.orm import relationship
 
@@ -15,6 +15,7 @@ class Users(Base):
     role = Column(String)
 
     profile = relationship("Profiles", back_populates="user", uselist=False)
+    posts = relationship("Posts", back_populates="user")
 
 
 class Profiles(Base):
@@ -31,3 +32,16 @@ class Profiles(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     user = relationship("Users", back_populates="profile", uselist=False)
+
+
+class Posts(Base):
+    __tablename__ = 'posts'
+    id = Column(Integer, primary_key = True, index = True)
+    title = Column(Text)
+    text = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    user = relationship("Users", back_populates="posts")
+
