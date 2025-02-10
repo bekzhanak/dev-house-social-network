@@ -7,7 +7,7 @@ from starlette import status
 from database import Sessionlocal
 from models import Users, Profiles, Posts
 from passlib.context import  CryptContext
-
+from schemas import *
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
 from datetime import timedelta, datetime, timezone
@@ -30,9 +30,6 @@ def get_db():
 db_dependeny = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
-class CreatePostRequest(BaseModel):
-    title: str
-    text: str
 
 @router.post("/create_post", status_code=status.HTTP_201_CREATED)
 async def create_post(current_user: user_dependency, db: db_dependeny, create_post_request: CreatePostRequest):

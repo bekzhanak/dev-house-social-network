@@ -1,10 +1,12 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Enum
 from datetime import datetime
 from sqlalchemy.orm import relationship
+import enum
 
-class UserRoles:
-    pass
+class RoleEnum(str, enum.Enum):
+    ADMIN = "admin"
+    USER = "user"
 
 class Users(Base):
     __tablename__ = 'users'
@@ -12,7 +14,11 @@ class Users(Base):
     username = Column(String,unique=True )
     email = Column(String,unique=True )
     hashed_password = Column(String)
-    role = Column(String)
+    role = Column(
+        Enum(RoleEnum, name="role_enum"),
+        nullable=False,
+        server_default=RoleEnum.USER.value
+    )
 
     profile = relationship("Profiles", back_populates="user", uselist=False)
     posts = relationship("Posts", back_populates="user")
