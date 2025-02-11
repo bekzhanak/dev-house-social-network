@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
+
 class CreateUserRequest(BaseModel):
     name: str
     surname: str
@@ -10,9 +11,11 @@ class CreateUserRequest(BaseModel):
     email: str
     password: str
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 class ProfileResponse(BaseModel):
     id: int
@@ -28,6 +31,7 @@ class ProfileResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 class UpdateProfileRequest(BaseModel):
     name: Optional[str] = None
