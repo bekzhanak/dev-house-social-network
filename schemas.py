@@ -43,3 +43,8 @@ class UpdateProfileRequest(BaseModel):
 class CreatePostRequest(BaseModel):
     title: str
     text: str
+
+
+class UpdatePostRequest(BaseModel):
+    title: str
+    text: str
