@@ -48,3 +48,10 @@ class CreatePostRequest(BaseModel):
 class UpdatePostRequest(BaseModel):
     title: str
     text: str
+
+
+class CreateCommentRequest(BaseModel):
+    text: str
+
+class UpdateCommentRequest(BaseModel):
+    text:str

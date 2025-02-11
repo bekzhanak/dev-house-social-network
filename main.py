@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 import models
 from database import engine
 from fastapi.responses import RedirectResponse
-from routers import auth, posts, profile
+from routers import auth, posts, profile, comments
 
 app = FastAPI()
 
@@ -17,3 +17,5 @@ def test(request: Request):
 app.include_router(auth.router)
 app.include_router(profile.router)
 app.include_router(posts.router)
+app.include_router(comments.router)
+

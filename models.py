@@ -22,6 +22,7 @@ class Users(Base):
 
     profile = relationship("Profiles", back_populates="user", uselist=False)
     posts = relationship("Posts", back_populates="user")
+    comments = relationship("Comments", back_populates="user")
 
 
 class Profiles(Base):
@@ -50,4 +51,17 @@ class Posts(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
 
     user = relationship("Users", back_populates="posts")
+    comments = relationship("Comments", back_populates="posts")
+
+class Comments(Base):
+    __tablename__ = 'comments'
+    id = Column(Integer, primary_key = True, index = True)
+    text = Column(Text)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    post_id = Column(Integer, ForeignKey("posts.id"))
+
+    user = relationship("Users", back_populates="comments")
+    posts = relationship("Posts", back_populates="comments")
 
