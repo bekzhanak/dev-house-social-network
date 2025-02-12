@@ -1,4 +1,78 @@
-.env
-venv
 migrations
 alembic.ini
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+
+# Virtual environment (venv)
+venv/
+env/
+.venv/
+*.env  # Environment variables (security reasons)
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Logs and databases
+logs/
+*.log
+*.sqlite3
+db.sqlite3
+
+# Dependency files
+Pipfile
+Pipfile.lock
+poetry.lock
+*.egg-info/
+*.whl
+
+# Migrations (if using Alembic)
+migrations/versions/
+
+# FastAPI specific
+instance/
+config.json
+
+# Docker-related
+docker-compose.override.yml
+.dockerignore
+
+# Git-related
+.git/
+.gitignore
+
+# MacOS-specific
+.DS_Store
+
+# Pytest cache
+.pytest_cache/
+
+# Jupyter Notebooks (if used)
+.ipynb_checkpoints/
+
+# Coverage reports
+htmlcov/
+.coverage
+*.cover
+
+# Static/media files (if uploaded)
+staticfiles/
+media/
+
+# Compiled Cython files
+*.c
+*.so
+
+# MyPy and other linting tools
+.mypy_cache/
+ruff_cache/
+
+# Terraform files (if applicable)
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup

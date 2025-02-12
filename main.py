@@ -1,9 +1,10 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 import models
 from database import engine
 from fastapi.responses import RedirectResponse
 from routers import auth, posts, profile, comments
-
+load_dotenv()
 app = FastAPI()
 
 models.Base.metadata.create_all(bind=engine)

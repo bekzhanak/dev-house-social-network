@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.post("/create_comment/{post_id}", status_code=status.HTTP_201_CREATED)
+@router.post("/{post_id}", status_code=status.HTTP_201_CREATED)
 async def create_comment(current_user: user_dependency, db: db_dependency, create_comment_request: CreateCommentRequest,
                          post_id: int = Path(gt=0)):
     current_post = db.query(Posts).filter(Posts.id == post_id).first()
@@ -30,7 +30,7 @@ async def create_comment(current_user: user_dependency, db: db_dependency, creat
     db.commit()
 
 
-@router.get("/get-comments-from-post/{post_id}")
+@router.get("/post/{post_id}")
 async def get_comments_from_post(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
     request_post = db.query(Posts).filter(Posts.id == post_id).first()
     comments_from_post = db.query(Comments).filter(Comments.post_id == post_id).all()
@@ -41,17 +41,17 @@ async def get_comments_from_post(current_user: user_dependency, db: db_dependenc
     return comments_from_post
 
 
-@router.get("/get-my-comments")
-async def get_comments_from_post(current_user: user_dependency, db: db_dependency):
+@router.get("/my")
+async def get_my_comments(current_user: user_dependency, db: db_dependency):
     user_comments = db.query(Comments).filter(Comments.user_id == current_user['id']).all()
     if not user_comments:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comments to that post not found")
     return user_comments
 
 
-@router.put("/update-comment/{comment_id}")
+@router.put("/{comment_id}")
 async def update_comment(update_data: UpdateCommentRequest, current_user: user_dependency, db: db_dependency,
-                      comment_id: int = Path(gt=0)):
+                         comment_id: int = Path(gt=0)):
     user_comment = db.query(Comments).filter(Comments.user_id == current_user['id'], Comments.id == comment_id).first()
     if not user_comment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found")
@@ -65,7 +65,8 @@ async def update_comment(update_data: UpdateCommentRequest, current_user: user_d
     db.refresh(user_comment)
     return user_comment
 
-@router.delete("/delete-comment/{comment_id}")
+
+@router.delete("/{comment_id}")
 async def delete_comment(current_user: user_dependency, db: db_dependency, comment_id: int = Path(gt=0)):
     user_comment = db.query(Comments).filter(Comments.user_id == current_user['id'], Comments.id == comment_id).first()
     if not user_comment:

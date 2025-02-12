@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 
-@router.post("/create_post", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_post(current_user: user_dependency, db: db_dependency, create_post_request: CreatePostRequest):
     new_post = Posts(
         title=create_post_request.title,
@@ -26,7 +26,7 @@ async def create_post(current_user: user_dependency, db: db_dependency, create_p
     db.commit()
 
 
-@router.get("/get-post/{post_id}")
+@router.get("/{post_id}")
 async def get_post(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
     user_post = db.query(Posts).filter(Posts.user_id == current_user['id'], Posts.id == post_id).first()
     if not user_post:
@@ -34,7 +34,7 @@ async def get_post(current_user: user_dependency, db: db_dependency, post_id: in
     return user_post
 
 
-@router.put("/update-post/{post_id}")
+@router.put("/{post_id}")
 async def update_post(update_data: UpdatePostRequest, current_user: user_dependency, db: db_dependency,
                       post_id: int = Path(gt=0)):
     user_post = db.query(Posts).filter(Posts.user_id == current_user['id'], Posts.id == post_id).first()
@@ -53,7 +53,7 @@ async def update_post(update_data: UpdatePostRequest, current_user: user_depende
     return user_post
 
 
-@router.delete("/delete-post/{post_id}")
+@router.delete("/{post_id}")
 async def delete_post(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
     user_post = db.query(Posts).filter(Posts.user_id == current_user['id'], Posts.id == post_id).first()
     if not user_post:

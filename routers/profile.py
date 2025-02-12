@@ -10,7 +10,7 @@ router = APIRouter(
     tags=['profile']
 )
 
-@router.get("/get-profile", response_model=ProfileResponse)
+@router.get("/me", response_model=ProfileResponse)
 async def get_profile(current_user: user_dependency, db: db_dependency):
     user_profile = db.query(Profiles).filter(Profiles.user_id == current_user['id']).first()
     if not user_profile:
@@ -18,7 +18,7 @@ async def get_profile(current_user: user_dependency, db: db_dependency):
     return user_profile
 
 
-@router.put("/update-profile", response_model=ProfileResponse)
+@router.put("/me", response_model=ProfileResponse)
 async def update_profile(update_data: UpdateProfileRequest, current_user: user_dependency, db: db_dependency):
 
     user_profile = db.query(Profiles).filter(Profiles.user_id == current_user['id']).first()
@@ -41,7 +41,7 @@ async def update_profile(update_data: UpdateProfileRequest, current_user: user_d
     return user_profile
 
 
-@router.delete("/delete-profile")
+@router.delete("/me")
 async def delete_profile(current_user: user_dependency, db: db_dependency):
     user_profile = db.query(Profiles).filter(Profiles.user_id == current_user['id']).first()
     user = db.query(Users).filter(Users.id == current_user['id']).first()
