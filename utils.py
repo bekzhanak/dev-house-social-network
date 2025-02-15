@@ -11,7 +11,6 @@ from starlette import status
 
 from models import *
 
-load_dotenv()
 SECRET_KEY = os.getenv("JWT_KEY")
 ALGORITHM = os.getenv("ALGORITHM_TYPE")
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -37,7 +36,7 @@ def create_access_token(username: str, user_id: int, role: str, expires_delta: t
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/token')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl='auth/login')
 token_dependency = Annotated[str, Depends(oauth2_bearer)]
 
 

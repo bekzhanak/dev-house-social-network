@@ -1,5 +1,5 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Enum
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, DateTime, Text, Enum, PrimaryKeyConstraint
 from datetime import datetime
 from sqlalchemy.orm import relationship
 import enum
@@ -7,6 +7,7 @@ import enum
 class RoleEnum(str, enum.Enum):
     ADMIN = "admin"
     USER = "user"
+
 
 class Users(Base):
     __tablename__ = 'users'
@@ -23,6 +24,21 @@ class Users(Base):
     profile = relationship("Profiles", back_populates="user", uselist=False)
     posts = relationship("Posts", back_populates="user")
     comments = relationship("Comments", back_populates="user")
+    likes = relationship("Likes", back_populates="user")
+
+    followers = relationship(
+        'Followers',
+        foreign_keys='Followers.following_id',
+        back_populates='following_user',
+        cascade='all, delete-orphan'
+    )
+
+    following = relationship(
+        'Followers',
+        foreign_keys='Followers.follower_id',
+        back_populates='follower_user',
+        cascade='all, delete-orphan'
+    )
 
 
 class Profiles(Base):
@@ -52,6 +68,8 @@ class Posts(Base):
 
     user = relationship("Users", back_populates="posts")
     comments = relationship("Comments", back_populates="posts")
+    likes = relationship("Likes", back_populates="posts")
+
 
 class Comments(Base):
     __tablename__ = 'comments'
@@ -65,3 +83,36 @@ class Comments(Base):
     user = relationship("Users", back_populates="comments")
     posts = relationship("Posts", back_populates="comments")
 
+
+class Likes(Base):
+    __tablename__ = 'likes'
+    id = Column(Integer, primary_key = True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    post_id = Column(Integer, ForeignKey("posts.id"))
+
+    user = relationship("Users", back_populates="likes")
+    posts = relationship("Posts", back_populates="likes")
+
+class Followers(Base):
+    __tablename__ = 'followers'
+
+    follower_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    following_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('follower_id', 'following_id'),
+    )
+
+    follower_user = relationship(
+        'Users',
+        foreign_keys=[follower_id],
+        back_populates='following'
+    )
+
+    following_user = relationship(
+        'Users',
+        foreign_keys=[following_id],
+        back_populates='followers'
+    )
