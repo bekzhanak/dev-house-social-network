@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from starlette import status
 from dependencies import *
-from models import Users, Profiles, Posts, Comments
+from models import *
 from schemas import *
 from datetime import datetime
 
