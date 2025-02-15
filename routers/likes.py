@@ -35,7 +35,7 @@ async def get_likes(current_user: user_dependency, db: db_dependency, post_id: i
 
 
 @router.delete("/{post_id}")
-async def delete_lie(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
+async def delete_like(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
     user_like = db.query(Likes).filter(Likes.user_id == current_user['id'], Likes.post_id == post_id).first()
     if not user_like:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Like not found")
