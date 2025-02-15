@@ -13,7 +13,7 @@ router = APIRouter(
 
 
 @router.post("/{post_id}", status_code=status.HTTP_201_CREATED)
-async def create_comment(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
+async def create_like(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
     current_post = db.query(Posts).filter(Posts.id == post_id).first()
     if not current_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
@@ -30,8 +30,8 @@ async def get_likes(current_user: user_dependency, db: db_dependency, post_id: i
     current_post = db.query(Posts).filter(Posts.id == post_id).first()
     if not current_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-    post_likes = db.query(Likes).filter(Likes.post_id == post_id).all()
-    return len(post_likes)
+    likes_count = db.query(Likes).filter(Likes.post_id == post_id).count()
+    return likes_count
 
 
 @router.delete("/{post_id}")

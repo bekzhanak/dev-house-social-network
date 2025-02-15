@@ -29,16 +29,12 @@ async def create_post(current_user: user_dependency, db: db_dependency, create_p
 @router.get("/lenta")
 async def get_all_post(current_user: user_dependency, db: db_dependency):
     all_posts = db.query(Posts).all()
-    if not all_posts:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There are no posts yes!")
     return all_posts
 
 
 @router.get("/post_by_user/{user_id}")
 async def get_posts_by_user(current_user: user_dependency, db: db_dependency, user_id: int = Path(gt=0)):
     user_posts = db.query(Posts).filter(Posts.user_id == user_id).all()
-    if not user_posts:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
     return user_posts
 
 
