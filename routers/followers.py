@@ -5,6 +5,7 @@ from dependencies import *
 from models import *
 from schemas import *
 from datetime import datetime
+from routers.auth import is_verified
 
 router = APIRouter(
     prefix='/followers',
@@ -13,6 +14,7 @@ router = APIRouter(
 
 @router.post("/follow/{following_id}", status_code=status.HTTP_201_CREATED)
 async def follow(current_user: user_dependency, db: db_dependency, following_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
     following_user = db.query(Users).filter(Users.id == following_id).first()
     if not following_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Such user not found")
@@ -44,6 +46,7 @@ async def get_followers(current_user: user_dependency, db: db_dependency, follow
 
 @router.post("/unfollow/{following_id}")
 async def unfollow(current_user: user_dependency, db: db_dependency, following_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
     following = db.query(Followers).filter(Followers.following_id == following_id, Followers.follower_id == current_user['id']).first()
     if not following:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="You dont follow such user")

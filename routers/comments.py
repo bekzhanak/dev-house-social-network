@@ -6,6 +6,7 @@ from dependencies import *
 from models import *
 from schemas import *
 from datetime import datetime
+from routers.auth import is_verified
 
 router = APIRouter(
     prefix='/comments',
@@ -16,6 +17,7 @@ router = APIRouter(
 @router.post("/{post_id}", status_code=status.HTTP_201_CREATED)
 async def create_comment(current_user: user_dependency, db: db_dependency, create_comment_request: CreateCommentRequest,
                          post_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
     current_post = db.query(Posts).filter(Posts.id == post_id).first()
     if not current_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
@@ -52,6 +54,7 @@ async def get_my_comments(current_user: user_dependency, db: db_dependency):
 @router.put("/{comment_id}")
 async def update_comment(update_data: UpdateCommentRequest, current_user: user_dependency, db: db_dependency,
                          comment_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
     user_comment = db.query(Comments).filter(Comments.user_id == current_user['id'], Comments.id == comment_id).first()
     if not user_comment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found")
@@ -68,6 +71,7 @@ async def update_comment(update_data: UpdateCommentRequest, current_user: user_d
 
 @router.delete("/{comment_id}")
 async def delete_comment(current_user: user_dependency, db: db_dependency, comment_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
     user_comment = db.query(Comments).filter(Comments.user_id == current_user['id'], Comments.id == comment_id).first()
     if not user_comment:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Comment not found")

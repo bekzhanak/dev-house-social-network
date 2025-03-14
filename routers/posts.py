@@ -6,7 +6,7 @@ from dependencies import *
 from models import *
 from schemas import *
 from datetime import datetime
-
+from routers.auth import is_verified
 router = APIRouter(
     prefix='/posts',
     tags=['posts']
@@ -15,6 +15,8 @@ router = APIRouter(
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_post(current_user: user_dependency, db: db_dependency, create_post_request: CreatePostRequest):
+    await is_verified(current_user, db)
+
     new_post = Posts(
         title=create_post_request.title,
         text=create_post_request.text,
@@ -50,6 +52,8 @@ async def get_post(current_user: user_dependency, db: db_dependency, post_id: in
 @router.put("/{post_id}")
 async def update_post(update_data: UpdatePostRequest, current_user: user_dependency, db: db_dependency,
                       post_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
+
     user_post = db.query(Posts).filter(Posts.user_id == current_user['id'], Posts.id == post_id).first()
     if not user_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
@@ -68,6 +72,8 @@ async def update_post(update_data: UpdatePostRequest, current_user: user_depende
 
 @router.delete("/{post_id}")
 async def delete_post(current_user: user_dependency, db: db_dependency, post_id: int = Path(gt=0)):
+    await is_verified(current_user, db)
+
     user_post = db.query(Posts).filter(Posts.user_id == current_user['id'], Posts.id == post_id).first()
     if not user_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
