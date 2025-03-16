@@ -55,3 +55,6 @@ class CreateCommentRequest(BaseModel):
 
 class UpdateCommentRequest(BaseModel):
     text:str
+
+class SendEmailRequest(BaseModel):
+    email: str

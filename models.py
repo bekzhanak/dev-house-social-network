@@ -25,6 +25,7 @@ class Users(Base):
     posts = relationship("Posts", back_populates="user")
     comments = relationship("Comments", back_populates="user")
     likes = relationship("Likes", back_populates="user")
+    emails = relationship("Emails", back_populates="user")
 
     followers = relationship(
         'Followers',
@@ -49,7 +50,7 @@ class Profiles(Base):
     date_of_birth = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    is_verified = Column(Boolean)
+    is_verified = Column(Boolean, default=False)
     last_login = Column(DateTime)
     is_active = Column(Boolean, default=True)
     user_id = Column(Integer, ForeignKey("users.id"))
@@ -116,3 +117,14 @@ class Followers(Base):
         foreign_keys=[following_id],
         back_populates='followers'
     )
+
+class Emails(Base):
+    __tablename__ = 'emails'
+
+    id = Column(Integer, primary_key = True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    verification_code = Column(Integer)
+    attempts = Column(Integer, default=0)
+
+    user = relationship("Users", back_populates="emails")
